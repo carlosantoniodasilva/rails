@@ -104,6 +104,12 @@ class PostgresqlArrayTest < ActiveRecord::TestCase
     assert_equal(PgArray.last.tags, tag_values)
   end
 
+  def test_update_all
+    PgArray.create! tags: ["one", "two", "three"]
+    PgArray.update_all tags: ["four", "five"]
+    assert_equal ["four", "five"], PgArray.first.tags
+  end
+
   private
   def assert_cycle array
     # test creation
