@@ -13,6 +13,7 @@ class PostgresqlArrayTest < ActiveRecord::TestCase
       @connection.transaction do
         @connection.create_table('pg_arrays') do |t|
           t.string 'tags', :array => true
+          t.integer 'ratings', :array => true
         end
       end
     @column = PgArray.columns.find { |c| c.name == 'tags' }
@@ -25,6 +26,12 @@ class PostgresqlArrayTest < ActiveRecord::TestCase
   def test_column
     assert_equal :string, @column.type
     assert @column.array
+    assert_not @column.text?
+
+    ratings_column = PgArray.columns_hash['ratings']
+    assert_equal :integer, ratings_column.type
+    assert ratings_column.array
+    assert_not ratings_column.number?
   end
 
   def test_change_column_with_array
@@ -40,8 +47,6 @@ class PostgresqlArrayTest < ActiveRecord::TestCase
   end
 
   def test_type_cast_array
-    assert @column
-
     data = '{1,2,3}'
     oid_type  = @column.instance_variable_get('@oid_type').subtype
     # we are getting the instance variable in this test, but in the

@@ -1,3 +1,21 @@
+*   Do not consider PG array columns as number or text columns.
+
+    The code uses these checks in several places to know what to do with a
+    particular column, for instance AR attribute query methods has a branch
+    like this:
+
+        if column.number?
+          !value.zero?
+        end
+
+    This should never be true for array columns, since it would be the same
+    as running [].zero?, which results in a NoMethodError exception.
+
+    Fixing this by ensuring that array columns in PostgreSQL never return
+    true for number?/text? checks.
+
+    *Carlos Antonio da Silva*
+
 *   `db:test:clone` and `db:test:prepare` must load Rails environment.
 
     `db:test:clone` and `db:test:prepare` use `ActiveRecord::Base`. configurations,
