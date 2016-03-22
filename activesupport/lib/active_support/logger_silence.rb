@@ -1,9 +1,11 @@
 require 'active_support/concern'
 require 'active_support/core_ext/module/attribute_accessors'
+require 'active_support/logger_thread_safe_level'
 require 'concurrent'
 
 module LoggerSilence
   extend ActiveSupport::Concern
+  prepend ActiveSupport::LoggerThreadSafeLevel
 
   included do
     cattr_accessor :silencer

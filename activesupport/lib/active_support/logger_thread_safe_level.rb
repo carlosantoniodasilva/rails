@@ -1,3 +1,6 @@
+require 'concurrent'
+require 'logger'
+
 module ActiveSupport
   module LoggerThreadSafeLevel # :nodoc:
     def initialize(*)
@@ -10,10 +13,10 @@ module ActiveSupport
       super
     end
 
-    Logger::Severity.constants.each do |severity|
+    ::Logger::Severity.constants.each do |severity|
       class_eval(<<-EOT, __FILE__, __LINE__ + 1)
         def #{severity.downcase}?                # def debug?
-          Logger::#{severity} >= level           #   DEBUG >= level
+          ::Logger::#{severity} >= level           #   DEBUG >= level
         end                                      # end
       EOT
     end

@@ -1,10 +1,8 @@
 require 'active_support/logger_silence'
-require 'active_support/logger_thread_safe_level'
 require 'logger'
 
 module ActiveSupport
   class Logger < ::Logger
-    prepend ActiveSupport::LoggerThreadSafeLevel
     include LoggerSilence
 
     # Returns true if the logger destination matches one of the sources

@@ -185,6 +185,20 @@ class LoggerTest < ActiveSupport::TestCase
     # but at least we don't break it
   end
 
+  def test_logger_silencing_works_for_inherited_stdlib_logger
+    @logger = Class.new(::Logger) { include ::LoggerSilence }.new(@output)
+
+    @logger.debug "CORRECT DEBUG"
+    @logger.silence do
+      @logger.debug "FAILURE"
+      @logger.error "CORRECT ERROR"
+    end
+
+    assert @output.string.include?("CORRECT DEBUG")
+    assert @output.string.include?("CORRECT ERROR")
+    assert_not @output.string.include?("FAILURE")
+  end
+
   def test_logger_level_per_object_thread_safety
     logger1 = Logger.new(StringIO.new)
     logger2 = Logger.new(StringIO.new)
