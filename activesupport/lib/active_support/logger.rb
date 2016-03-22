@@ -4,7 +4,7 @@ require 'logger'
 
 module ActiveSupport
   class Logger < ::Logger
-    include ActiveSupport::LoggerThreadSafeLevel
+    prepend ActiveSupport::LoggerThreadSafeLevel
     include LoggerSilence
 
     # Returns true if the logger destination matches one of the sources
@@ -61,20 +61,6 @@ module ActiveSupport
     def initialize(*args)
       super
       @formatter = SimpleFormatter.new
-      after_initialize if respond_to? :after_initialize
-    end
-
-    def add(severity, message = nil, progname = nil, &block)
-      return true if @logdev.nil? || (severity || UNKNOWN) < level
-      super
-    end
-
-    Logger::Severity.constants.each do |severity|
-      class_eval(<<-EOT, __FILE__, __LINE__ + 1)
-        def #{severity.downcase}?                # def debug?
-          Logger::#{severity} >= level           #   DEBUG >= level
-        end                                      # end
-      EOT
     end
 
     # Simple formatter which only displays the message.

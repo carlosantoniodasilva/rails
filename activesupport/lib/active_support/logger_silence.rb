@@ -14,8 +14,8 @@ module LoggerSilence
   def silence(temporary_level = Logger::ERROR)
     if silencer
       begin
-        old_local_level            = local_level
-        self.local_level           = temporary_level
+        old_local_level  = local_level
+        self.local_level = temporary_level
 
         yield self
       ensure
